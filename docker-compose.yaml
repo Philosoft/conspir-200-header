@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+    frontend:
+        image: nginx:1.19.6-alpine
+        volumes:
+            - ./nginx/test-site.conf:/etc/nginx/conf.d/test-site.conf
+            - ./app:/var/www/html
+        ports:
+            - 8888:80
+        command: [nginx-debug, '-g', 'daemon off;']
+
+    backend:
+        image: php:7.4.13-fpm-alpine
+        volumes:
+            - ./app:/var/www/html
+
+    php-front:
+        image: php:7.4.13-cli-alpine
+        volumes:
+            - ./app:/var/www/html
+        ports:
+            - 8889:8080
+        command: ["php", "-S", "0.0.0.0:8080", "-t", "/var/www/html"]
