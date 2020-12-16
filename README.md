@@ -220,4 +220,4 @@ frontend_1   |
 
 Why it's working like that?
 
-Basically [here](https://github.com/php/php-src/blob/721ca87e56057b531ac3e431df52532a1e5d4ae6/sapi/fpm/fpm/fpm_main.c#L324) php-fpm is specifically ignoring status line for 200 response code, but [here](https://github.com/php/php-src/blob/721ca87e56057b531ac3e431df52532a1e5d4ae6/sapi/fpm/fpm/fpm_main.c#L389-L396) a little bit down there is an possibility to overwrite it.
+Basically [here](https://github.com/php/php-src/blob/721ca87e56057b531ac3e431df52532a1e5d4ae6/sapi/fpm/fpm/fpm_main.c#L324) php-fpm is specifically ignoring status line for 200 response code, but [here](https://github.com/php/php-src/blob/721ca87e56057b531ac3e431df52532a1e5d4ae6/sapi/fpm/fpm/fpm_main.c#L389-L396) a little bit down, there is a possibility to overwrite it.
