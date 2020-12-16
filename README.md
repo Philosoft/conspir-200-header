@@ -34,6 +34,21 @@ X-Powered-By: PHP/7.4.13
 content
 ```
 
+### 200 + bypass hack
+
+```
+--- ~ » curl -H 'Host: testheader.lh' -D - '127.0.0.1:8888/index.php?code=200&bypass=y'
+HTTP/1.1 200 ololo
+Server: nginx/1.19.6
+Date: Wed, 16 Dec 2020 23:34:45 GMT
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/7.4.13
+
+content
+```
+
 ## php -S
 
 ### 201
@@ -170,3 +185,39 @@ frontend_1   | X-Powered-By: PHP/7.4.13
 frontend_1   | 
 
 ```
+
+##### bypass + 200 response
+
+```
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 recv: fd:21 120 of 4096
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi record byte: 01
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi record byte: 06
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi record byte: 00
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi record byte: 01
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi record byte: 00
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi record byte: 5F
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi record byte: 01
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi record byte: 00
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi record length: 95
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi parser: 0
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi header: "X-Powered-By: PHP/7.4.13"
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi parser: 0
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi header: "Status: 200 ololo"
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi parser: 0
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi header: "Content-type: text/html; charset=UTF-8"
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi parser: 1
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 http fastcgi header done
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 posix_memalign: 00005615BD68E120:4096 @16
+frontend_1   | 2020/12/16 23:34:45 [debug] 21#21: *9 HTTP/1.1 200 ololo
+frontend_1   | Server: nginx/1.19.6
+frontend_1   | Date: Wed, 16 Dec 2020 23:34:45 GMT
+frontend_1   | Content-Type: text/html; charset=UTF-8
+frontend_1   | Transfer-Encoding: chunked
+frontend_1   | Connection: keep-alive
+frontend_1   | X-Powered-By: PHP/7.4.13
+frontend_1   |
+```
+
+Why it's working like that?
+
+Basically [here](https://github.com/php/php-src/blob/721ca87e56057b531ac3e431df52532a1e5d4ae6/sapi/fpm/fpm/fpm_main.c#L324) php-fpm is specifically ignoring status line for 200 response code, but [here](https://github.com/php/php-src/blob/721ca87e56057b531ac3e431df52532a1e5d4ae6/sapi/fpm/fpm/fpm_main.c#L389-L396) a little bit down there is an possibility to overwrite it.
