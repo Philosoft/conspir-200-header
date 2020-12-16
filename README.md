@@ -34,6 +34,38 @@ X-Powered-By: PHP/7.4.13
 content
 ```
 
+## php -S
+
+### 201
+
+```
+--- ~ » curl -D - 'http://127.0.0.1:8889/index.php?code=201'
+HTTP/1.1 201 ololo
+Host: 127.0.0.1:8889
+Date: Wed, 16 Dec 2020 23:07:14 GMT
+Connection: close
+X-Powered-By: PHP/7.4.13
+Content-type: text/html; charset=UTF-8
+
+content
+```
+
+### 200
+
+```
+--- ~ » curl -D - 'http://127.0.0.1:8889/index.php?code=200'
+HTTP/1.1 200 ololo
+Host: 127.0.0.1:8889
+Date: Wed, 16 Dec 2020 23:07:27 GMT
+Connection: close
+X-Powered-By: PHP/7.4.13
+Content-type: text/html; charset=UTF-8
+
+content
+```
+
+## Additional evidence for nginx + php-fpm
+
 #### excerpt from tcpdump
 
 ##### ad-hoc installation of tcpdump
@@ -137,34 +169,4 @@ frontend_1   | Connection: keep-alive
 frontend_1   | X-Powered-By: PHP/7.4.13
 frontend_1   | 
 
-```
-
-## php -s
-
-### 201
-
-```
---- ~ » curl -D - 'http://127.0.0.1:8889/index.php?code=201'
-HTTP/1.1 201 ololo
-Host: 127.0.0.1:8889
-Date: Wed, 16 Dec 2020 23:07:14 GMT
-Connection: close
-X-Powered-By: PHP/7.4.13
-Content-type: text/html; charset=UTF-8
-
-content
-```
-
-### 200
-
-```
---- ~ » curl -D - 'http://127.0.0.1:8889/index.php?code=200'
-HTTP/1.1 200 ololo
-Host: 127.0.0.1:8889
-Date: Wed, 16 Dec 2020 23:07:27 GMT
-Connection: close
-X-Powered-By: PHP/7.4.13
-Content-type: text/html; charset=UTF-8
-
-content
 ```
